@@ -38,7 +38,7 @@ export default function Dashboard() {
 
     const { data: rawHistory } = await supabase
       .from("stock_prices")
-      .select("date, close, sma_20, ema_20, rsi_14") // Ambil RSI juga
+      .select("date, close, sma_20, ema_20, rsi_14")
       .eq("symbol", symbol)
       .order("date", { ascending: false })
       .limit(90);
@@ -57,7 +57,7 @@ export default function Dashboard() {
         actual: item.close,
         sma: item.sma_20,
         ema: item.ema_20,
-        rsi: item.rsi_14, // Map RSI
+        rsi: item.rsi_14,
         predicted: null,
       }));
 
@@ -186,11 +186,7 @@ export default function Dashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data} syncId="stockSync">
                       <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                      <XAxis
-                        dataKey="date"
-                        stroke="#64748b"
-                        tick={false} // Sembunyikan tanggal di chart atas biar rapi
-                      />
+                      <XAxis dataKey="date" stroke="#64748b" tick={false} />
                       <YAxis
                         stroke="#64748b"
                         domain={["auto", "auto"]}
@@ -202,9 +198,13 @@ export default function Dashboard() {
                           borderColor: "#334155",
                         }}
                         itemStyle={{ color: "#e2e8f0" }}
-                        formatter={(value: number, name: string) => {
+                        // FIX: Menggunakan tipe 'any' agar tidak crash di CI/CD
+                        formatter={(value: any, name: string) => {
                           if (!value) return ["-", name];
-                          return [`Rp${value.toLocaleString("id-ID")}`, name];
+                          return [
+                            `Rp${Number(value).toLocaleString("id-ID")}`,
+                            name,
+                          ];
                         }}
                       />
                       <Legend />
@@ -255,7 +255,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* 2. GRAFIK RSI (Indikator Momentum) */}
+            {/* 2. GRAFIK RSI */}
             {data.length > 0 && (
               <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
                 <h3 className="text-sm font-semibold text-slate-400 mb-2">
@@ -282,10 +282,8 @@ export default function Dashboard() {
                           borderColor: "#334155",
                         }}
                         itemStyle={{ color: "#e2e8f0" }}
-                        formatter={(value: number) => [
-                          value?.toFixed(2),
-                          "RSI",
-                        ]}
+                        // FIX: Menggunakan tipe 'any' untuk keamanan
+                        formatter={(value: any) => [value?.toFixed(2), "RSI"]}
                       />
                       <ReferenceLine
                         y={70}
@@ -323,7 +321,6 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* KOLOM KANAN: TRADING PANEL */}
           <div className="lg:col-span-1">
             {data.length > 0 ? (
               <TradingPanel ticker={ticker} currentPrice={currentPrice} />
