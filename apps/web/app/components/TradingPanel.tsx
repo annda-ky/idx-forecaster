@@ -29,7 +29,7 @@ export default function TradingPanel({
 
   useEffect(() => {
     fetchUserData();
-  }, [ticker, mode]); // Refresh saat ganti saham atau ganti mode
+  }, [ticker, mode]);
 
   async function fetchUserData() {
     const {
@@ -37,7 +37,6 @@ export default function TradingPanel({
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    // 1. Ambil Saldo Uang
     const { data: portData } = await supabase
       .from("portfolios")
       .select("balance")
@@ -45,7 +44,6 @@ export default function TradingPanel({
       .single();
     if (portData) setBalance(portData.balance);
 
-    // 2. Ambil Stok Saham Ini
     const { data: stockData } = await supabase
       .from("portfolio_stocks")
       .select("quantity")
@@ -63,7 +61,7 @@ export default function TradingPanel({
 
       const { error } = await supabase.rpc(functionName, {
         p_symbol: ticker,
-        p_quantity: qty * 100, // Konversi Lot ke Lembar
+        p_quantity: qty * 100,
         p_price: currentPrice,
       });
 
@@ -73,7 +71,7 @@ export default function TradingPanel({
         `Berhasil ${mode === "BUY" ? "membeli" : "menjual"} ${qty} Lot ${ticker}!`,
       );
       setQty(1);
-      fetchUserData(); // Refresh data saldo/stok
+      fetchUserData();
     } catch (err: any) {
       alert(`Gagal ${mode}: ` + err.message);
     } finally {
@@ -82,34 +80,31 @@ export default function TradingPanel({
   }
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl h-full flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-          <DollarSign
-            className={mode === "BUY" ? "text-green-500" : "text-red-500"}
-            size={20}
-          />
-          Market Order
+    <div className="h-full flex flex-col p-6 font-body">
+      <div className="flex items-center justify-between mb-8">
+        <h3 className="text-xl font-serif font-semibold text-[#D4AF37] flex items-center gap-2">
+          <DollarSign className="text-[#A98E4B]" size={24} />
+          Market Execution
         </h3>
 
-        {/* Toggle Buy/Sell */}
-        <div className="flex bg-slate-800 rounded-lg p-1">
+        {/* Toggle Buy/Sell - Raffles Pill Style */}
+        <div className="flex bg-black/40 p-1 rounded-full border border-[#A98E4B]/30 shadow-inner">
           <button
             onClick={() => setMode("BUY")}
-            className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${
+            className={`px-6 py-2 rounded-full text-xs font-bold transition-all duration-300 tracking-wider ${
               mode === "BUY"
-                ? "bg-green-600 text-white shadow"
-                : "text-slate-400 hover:text-white"
+                ? "bg-emerald-600 text-[#F5F5DC] shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                : "text-[#A98E4B] hover:text-[#D4AF37]"
             }`}
           >
             BUY
           </button>
           <button
             onClick={() => setMode("SELL")}
-            className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${
+            className={`px-6 py-2 rounded-full text-xs font-bold transition-all duration-300 tracking-wider ${
               mode === "SELL"
-                ? "bg-red-600 text-white shadow"
-                : "text-slate-400 hover:text-white"
+                ? "bg-rose-600 text-[#F5F5DC] shadow-[0_0_10px_rgba(244,63,94,0.3)]"
+                : "text-[#A98E4B] hover:text-[#D4AF37]"
             }`}
           >
             SELL
@@ -117,15 +112,18 @@ export default function TradingPanel({
         </div>
       </div>
 
-      <div className="space-y-4 flex-1">
-        {/* Info Contextual: Kalau Buy liat Saldo, Kalau Sell liat Stok */}
-        <div className="bg-slate-800/50 p-3 rounded-lg flex items-center justify-between">
-          <span className="text-sm text-slate-400 flex items-center gap-2">
-            <Wallet size={14} />{" "}
-            {mode === "BUY" ? "Buying Power" : "Owned Lots"}
-          </span>
+      <div className="space-y-6 flex-1 flex flex-col justify-center">
+        {/* Info Card */}
+        <div className="bg-[#1A1D23]/80 p-5 rounded-none border border-[#D4AF37]/30 backdrop-blur-md shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-[#D4AF37]"></div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-[#A98E4B] flex items-center gap-2 uppercase tracking-[0.2em]">
+              <Wallet size={14} />
+              {mode === "BUY" ? "Buying Power" : "Owned Lots"}
+            </span>
+          </div>
           <span
-            className={`font-mono font-bold ${mode === "BUY" ? "text-green-400" : "text-blue-400"}`}
+            className={`font-mono text-2xl font-bold tracking-tight ${mode === "BUY" ? "text-[#F5F5DC]" : "text-[#D4AF37]"}`}
           >
             {mode === "BUY"
               ? `Rp${balance.toLocaleString("id-ID")}`
@@ -134,14 +132,14 @@ export default function TradingPanel({
         </div>
 
         {/* Input Lot */}
-        <div>
-          <label className="text-sm text-slate-400 mb-1 block">
-            Jumlah Lot (1 Lot = 100 lbr)
+        <div className="bg-black/20 p-4 rounded-none border border-[#A98E4B]/20">
+          <label className="text-xs text-[#A98E4B] mb-3 block uppercase tracking-wider pl-1 font-bold">
+            Quantity (Lot)
           </label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setQty(Math.max(1, qty - 1))}
-              className="bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded text-white font-bold"
+              className="bg-[#1A1D23] hover:bg-[#2C2C2C] w-12 h-12 rounded-lg text-[#D4AF37] font-bold transition-colors border border-[#A98E4B]/30 shadow-sm"
             >
               -
             </button>
@@ -150,11 +148,11 @@ export default function TradingPanel({
               min="1"
               value={qty}
               onChange={(e) => setQty(Number(e.target.value))}
-              className="flex-1 bg-slate-950 border border-slate-700 rounded h-10 text-center text-white"
+              className="flex-1 bg-[#0F1115] border border-[#A98E4B]/30 rounded-lg h-12 text-center text-[#F5F5DC] text-lg font-mono focus:outline-none focus:border-[#D4AF37] transition-all shadow-inner"
             />
             <button
               onClick={() => setQty(qty + 1)}
-              className="bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded text-white font-bold"
+              className="bg-[#1A1D23] hover:bg-[#2C2C2C] w-12 h-12 rounded-lg text-[#D4AF37] font-bold transition-colors border border-[#A98E4B]/30 shadow-sm"
             >
               +
             </button>
@@ -162,19 +160,19 @@ export default function TradingPanel({
         </div>
 
         {/* Kalkulasi */}
-        <div className="space-y-1 py-4 border-t border-slate-800 mt-4">
+        <div className="space-y-3 py-4 border-t border-dashed border-[#A98E4B]/30">
           <div className="flex justify-between text-sm">
-            <span className="text-slate-500">Harga per lembar</span>
-            <span className="text-slate-300">
+            <span className="text-[#A98E4B]">Price / Share</span>
+            <span className="text-[#F5F5DC] font-mono">
               Rp{currentPrice.toLocaleString("id-ID")}
             </span>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-slate-500">
-              Estimasi {mode === "BUY" ? "Biaya" : "Terima"}
+          <div className="flex justify-between items-center pt-2">
+            <span className="text-[#A98E4B] text-sm font-semibold tracking-wide">
+              Estimated Total
             </span>
             <span
-              className={`font-bold text-lg ${mode === "BUY" ? "text-white" : "text-green-400"}`}
+              className={`font-bold text-xl md:text-2xl font-mono ${mode === "BUY" ? "text-emerald-500" : "text-rose-500"}`}
             >
               Rp{totalValue.toLocaleString("id-ID")}
             </span>
@@ -189,14 +187,14 @@ export default function TradingPanel({
             (mode === "BUY" && balance < totalValue) ||
             (mode === "SELL" && ownedQty < qty * 100)
           }
-          className={`w-full font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+          className={`w-full font-bold py-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transform hover:-translate-y-1 ${
             mode === "BUY"
-              ? "bg-green-600 hover:bg-green-700 text-white"
-              : "bg-red-600 hover:bg-red-700 text-white"
+              ? "bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500/50"
+              : "bg-rose-600 hover:bg-rose-500 text-white border border-rose-500/50"
           }`}
         >
           {loading ? (
-            <Loader2 className="animate-spin" />
+            <Loader2 className="animate-spin text-[#D4AF37]" />
           ) : (
             <>
               {mode === "BUY" ? (
@@ -204,22 +202,24 @@ export default function TradingPanel({
               ) : (
                 <ArrowDownCircle size={20} />
               )}
-              {mode === "BUY" ? "BELI SEKARANG" : "JUAL SEKARANG"}
+              {mode === "BUY" ? "EXECUTE BUY" : "EXECUTE SELL"}
             </>
           )}
         </button>
 
-        {/* Error Message kalau saldo/stok kurang */}
-        {mode === "BUY" && balance < totalValue && (
-          <p className="text-xs text-red-500 text-center">
-            Saldo tidak mencukupi
-          </p>
-        )}
-        {mode === "SELL" && ownedQty < qty * 100 && (
-          <p className="text-xs text-red-500 text-center">
-            Stok saham tidak mencukupi
-          </p>
-        )}
+        {/* Error Info */}
+        <div className="min-h-[20px]">
+          {mode === "BUY" && balance < totalValue && (
+            <p className="text-xs text-rose-400 text-center bg-rose-900/20 py-2 rounded border border-rose-500/30">
+              Insufficient funds for this trade.
+            </p>
+          )}
+          {mode === "SELL" && ownedQty < qty * 100 && (
+            <p className="text-xs text-rose-400 text-center bg-rose-900/20 py-2 rounded border border-rose-500/30">
+              Insufficient stock holdings.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

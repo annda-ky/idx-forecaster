@@ -55,5 +55,29 @@ def run_forecast(ticker_symbol):
     except Exception as e:
         print(f"Error saving predictions: {e}")
 
+    # --- Raffles Concierge (AI Advisor) ---
+    try:
+        from src.core.advisor import generate_advisor_insight
+        insight = generate_advisor_insight(df)
+        
+        insight_record = {
+            "symbol": ticker_symbol,
+            "sentiment": insight["sentiment"],
+            "score": insight["score"],
+            "title": insight["title"],
+            "message": insight["message"],
+            "rsi": insight["indicators"]["rsi"],
+            "ema_20": insight["indicators"]["ema_20"],
+            "trend": insight["indicators"]["trend"],
+            "updated_at": datetime.now().isoformat()
+        }
+        
+        # Upsert to 'stock_insights' table
+        supabase.table("stock_insights").upsert(insight_record).execute()
+        print(f"Saved AI Insight for {ticker_symbol}")
+        
+    except Exception as e:
+        print(f"Error generating/saving AI insight: {e}")
+
 if __name__ == "__main__":
     run_forecast("BBCA.JK")

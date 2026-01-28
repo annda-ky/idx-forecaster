@@ -24,25 +24,50 @@ def calculate_indicators(df):
     rs = gain / loss
     df['rsi_14'] = 100 - (100 / (1 + rs))
     
-    # Handle NaN (Data 20 hari pertama pasti kosong)
     df = df.fillna(0)
     return df
+
+def ingest_company_profile(symbol: str, ticker_obj):
+    print(f"ℹ️  Fetching profile for {symbol}...")
+    try:
+        info = ticker_obj.info
+        
+        # Mapping data dari yfinance ke tabel kita
+        profile_data = {
+            "symbol": symbol,
+            "company_name": info.get('longName', symbol),
+            "sector": info.get('sector', 'Unknown'),
+            "industry": info.get('industry', 'Unknown'),
+            "description": info.get('longBusinessSummary', 'No description available.'),
+            "market_cap": info.get('marketCap', 0),
+            "pe_ratio": info.get('trailingPE', 0),
+            "dividend_yield": info.get('dividendYield', 0)
+        }
+
+        # Upsert ke Supabase
+        supabase.table("company_profiles").upsert(profile_data).execute()
+        print(f"✅ Profile updated for {symbol}")
+        
+    except Exception as e:
+        print(f"⚠️ Failed to update profile for {symbol}: {e}")
 
 def ingest_stock_data(symbol: str):
     print(f"📥 Fetching data for {symbol}...")
     
-    # Ambil data 2 tahun terakhir
     ticker = yf.Ticker(symbol)
+    
+    # 1. Ingest Profil Perusahaan (Sekalian)
+    ingest_company_profile(symbol, ticker)
+
+    # 2. Ingest Harga Historis
     hist = ticker.history(period="2y")
     
     if hist.empty:
         print(f"❌ No data found for {symbol}")
         return
 
-    # Hitung Indikator
     hist = calculate_indicators(hist)
 
-    # Siapkan data untuk insert
     records = []
     for date, row in hist.iterrows():
         records.append({
@@ -52,13 +77,12 @@ def ingest_stock_data(symbol: str):
             "high": row['High'],
             "low": row['Low'],
             "close": row['Close'],
-            "volume": int(row['Volume']), # <--- PERBAIKAN DISINI (tambah int())
+            "volume": int(row['Volume']),
             "sma_20": row['sma_20'] if row['sma_20'] != 0 else None,
             "ema_20": row['ema_20'] if row['ema_20'] != 0 else None,
             "rsi_14": row['rsi_14'] if row['rsi_14'] != 0 else None
         })
 
-    # Upsert ke Supabase (Batch 1000 baris biar aman)
     batch_size = 1000
     for i in range(0, len(records), batch_size):
         batch = records[i:i + batch_size]
@@ -66,9 +90,5 @@ def ingest_stock_data(symbol: str):
             supabase.table("stock_prices").upsert(batch, on_conflict="symbol, date").execute()
             print(f"✅ Upserted batch {i//batch_size + 1} for {symbol}")
         except Exception as e:
-            print(f"⚠️ Error upserting: {e}")
+            print(f"⚠️ Error upserting prices: {e}")
 
-if __name__ == "__main__":
-    tickers = ["BBCA.JK", "TLKM.JK", "GOTO.JK", "BMRI.JK", "ASII.JK"]
-    for t in tickers:
-        ingest_stock_data(t)
