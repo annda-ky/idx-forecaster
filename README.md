@@ -1,64 +1,61 @@
 # IDX Forecaster - Raffles Heritage Edition 🏛️✨
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Status](https://img.shields.io/badge/status-Active-success.svg)
-![Theme](https://img.shields.io/badge/theme-Raffles%20Heritage-D4AF37.svg)
+<div align="center">
 
-**IDX Forecaster** is a premium, institutional-grade stock analysis dashboard tailored for the Indonesian Stock Exchange (IDX).
+![License](https://img.shields.io/badge/LICENSE-MIT-D4AF37?style=for-the-badge&logo=opensourceinitiative&logoColor=white)
+![Version](https://img.shields.io/badge/VERSION-2.0.0-black?style=for-the-badge)
+![Status](https://img.shields.io/badge/STATUS-ACTIVE-success?style=for-the-badge)
+![Theme](https://img.shields.io/badge/THEME-RAFFLES_HERITAGE-1A1D23?style=for-the-badge&color=D4AF37)
 
-Featuring the luxurious **"Raffles Heritage"** aesthetic, it combines deep financial data with high-end visual design, offering real-time technical analysis, AI-driven insights, and a comprehensive market screener.
+**Institutional-Grade Stock Analysis & Forecasting Dashboard**
 
-![Dashboard Preview](http://localhost:3000/dashboard-preview.png)
+[View Demo](http://localhost:3000) • [Report Bug](https://github.com/yourusername/idx-forecaster/issues) • [Request Feature](https://github.com/yourusername/idx-forecaster/issues)
 
-## 🌟 Key Features
-
-### 1. The "Raffles Heritage" Experience
-
-- **Luxury UI**: A sophisticated blend of Deep Graphite, Warm Gold, and Creamy Ivory.
-- **Typography**: Uses **Playfair Display** (Serif) for headings and **Poppins** (Sans) for modern readability.
-- **Glassmorphism**: Premium frosted glass panels for a depth-rich interface.
-
-### 2. Raffles Concierge (AI Advisor) 🎩
-
-- **Personalized Insights**: An "AI Concierge" that interprets technical indicators (RSI, SMA, EMA) into natural language advice.
-- **Real-time Analysis**: Powered by a Python backend that processes market data 24/7.
-- **Narrative Logic**: Tells you _why_ to Buy or Sell (e.g., "Prime Accumulation Zone").
-
-### 3. Professional Charting 🕯️
-
-- **Interactive Candlestick Charts**: Full OHLC visualization using Recharts.
-- **Technical Overlays**: SMA-20, EMA-20, and RSI-14 indicators overlaid on price action.
-- **Crosshair Tooltips**: Precision data inspection.
-
-### 4. Market Screener 📊
-
-- **Coverage**: Supports **All IDX Stocks** (700+ Tickers).
-- **Smart Filters**: Instantly find Top Gainers, Top Losers, and Most Active stocks.
-- **Real-time Search**: Autocomplete search bar powered by Supabase.
+</div>
 
 ---
 
-## 🛠️ Technology Stack
+## 🦅 Overview
 
-### Frontend (User Interface)
+**IDX Forecaster** is a premium stock analysis platform tailored for the Indonesian Stock Exchange (IDX). Featuring the luxurious **"Raffles Heritage"** aesthetic, it combines deep financial data with high-end visual design.
 
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Custom CSS Variables
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Charts**: [Recharts](https://recharts.org/)
+It goes beyond simple charting by providing **AI-Driven Insights** ("Raffles Concierge"), real-time market screening, and institutional-grade forecasting models.
 
-### Backend (Worker & AI)
+![Dashboard Preview](http://localhost:3000/dashboard-preview.png)
 
-- **Runtime**: Python 3.10+
-- **Framework**: Flask (API) + APScheduler (Background Jobs)
-- **Data Processing**: Pandas, NumPy, YFinance
-- **AI Logic**: Rule-based Expert System (Technical Analysis Engine)
+## 💻 Tech Stack
 
-### Database & Infra
+### Frontend Core
 
-- **Database**: [Supabase](https://supabase.com/) (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **Real-time**: Supabase Realtime Subscriptions
+![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+### Backend & AI Engine
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/scikit_learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+
+### Infrastructure & Database
+
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+---
+
+## 🌟 Key Features
+
+| Feature                    | Description                                                                                                |
+| :------------------------- | :--------------------------------------------------------------------------------------------------------- |
+| **🏛️ Raffles Heritage UI** | A sophisticated blend of Deep Graphite, Warm Gold, and Creamy Ivory using **Playfair Display**.            |
+| **🎩 Raffles Concierge**   | **AI-powered assistant** that translates technical indicators (RSI, SMA) into actionable narrative advice. |
+| **🕯️ Pro Charting**        | Interactive **OHLC Candlestick charts** with technical overlays and precision tooltips.                    |
+| **📊 Market Screener**     | Real-time screener for **700+ IDX Stocks** with "Top Gainers" and "Most Active" filters.                   |
+| **⚡ Real-time Data**      | Background Python workers fetch and process market data 24/7 using robust scheduling.                      |
 
 ---
 
@@ -66,92 +63,51 @@ Featuring the luxurious **"Raffles Heritage"** aesthetic, it combines deep finan
 
 ### Prerequisites
 
-- Node.js 18+
-- Python 3.10+
-- Supabase Project
+- **Node.js** 18+
+- **Python** 3.10+
+- **Supabase** Project
 
-### 1. Clone the Repository
+### 1. Clone & Install
 
 ```bash
 git clone https://github.com/yourusername/idx-forecaster.git
 cd idx-forecaster
 ```
 
-### 2. Setup Database (Supabase)
-
-1.  Create a project on Supabase.
-2.  Run the migration files located in `supabase/migrations/` in your Supabase SQL Editor to create tables:
-    - `company_profiles`
-    - `stock_prices`
-    - `predictions`
-    - `stock_insights` (New!)
-
-### 3. Configure Environment
-
-Create a `.env` file in `apps/web` and `apps/worker`:
-
-**apps/web/.env.local**
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
-```
-
-**apps/worker/.env**
-
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_key
-PORT=8080
-ENABLE_SCHEDULER=true
-```
-
-### 4. Run the Python Worker (Data Engine)
-
-The worker fetches data and generates AI insights.
-
-```bash
-cd apps/worker
-# Create virtual env
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the worker
-python app.py
-```
-
-_The scheduler will start ingesting data for all IDX stocks in the background._
-
-### 5. Run the Frontend (Dashboard)
+### 2. Frontend Setup
 
 ```bash
 cd apps/web
 npm install
+# Create .env.local with Supabase credentials
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+### 3. Worker Setup (AI Engine)
+
+```bash
+cd apps/worker
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py
+```
 
 ---
 
-## 📅 Roadmap
+## 🤝 Roadmap
 
-- [x] **Phase 1**: Design System & Global Styles (Raffles Theme).
-- [x] **Phase 2**: Core Components (Charts, Tables).
-- [x] **Phase 3**: AI Features (Concierge, Sentiment Gauge).
-- [x] **Phase 4**: Market Scaling (All IDX Stocks).
-- [ ] **Phase 5**: Smart Limit Orders (Pending Implementation).
-- [ ] **Phase 6**: Sultan's Vault Analytics.
+- [x] **Raffles Heritage Theme** (Gold/Black Luxury UI)
+- [x] **Information Architecture** (Leaderboard, Portfolio, Panels)
+- [x] **AI Concierge** (Natural Language Insights)
+- [x] **Market Wide Scaling** (All IDX Tickers)
+- [ ] **Smart Limit Orders** (Automated Buying)
+- [ ] **Sultan's Vault** (Wealth Analytics)
 
 ---
 
-## 🤝 Contributing
+<div align="center">
 
-Contributions are welcome! Please fork the repository and submit a Pull Request.
+**Built with ❤️ for Indonesian Traders**
 
-## 📄 License
-
-This project is licensed under the MIT License.
+</div>
